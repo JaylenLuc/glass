@@ -28,8 +28,8 @@ class estimator:
         print()
         print('-'*50)
         squarefoot = estimator.isnum(input('Enter a total Square Footage: '))
+        self.squarefoot_original= squarefoot
         self.find_SQf(squarefoot)
-        self.squarefoot_orginal = squarefoot
 
     @staticmethod
     def isnum(param): #predicate
@@ -53,9 +53,10 @@ class estimator:
         #not required 
         self.steelamount = 0
         self.breakmetal = 0
-        self.others = 0
         self.liftprice = 0
-        self.others=0
+        pr = {'square footage: ': self.squarefoot_original,'shops: ': self.shops,'fasteners: ':self.fasteners,\
+            'misc: ':self.misc,'silicone: ': self.silicone,'license/bond: ':self.licensebond}
+        for k,v in pr.items(): print(f'{k}{v}')
     
     def linFoot(self,param): self.linearfootageprice = (int(param) * 2) * 4
 
@@ -73,13 +74,14 @@ class estimator:
 
     def end(self):
         print('Dollar figures:')
+        print(f'Square footage (unrounded): {self.squarefoot_original}')
         print(f'-Shops: {self.shops}')
         print(f'-linear footage: {self.linearfootageprice}')
         print(f'-Fasteners: {self.fasteners}')
         print(f'-Steel: {self.steelamount}') #not req
         print(f'-Misc total: {self.misc}')
         print(f'-Liscense/Bond: {self.licensebond}')
-        print(f'-Brake Metal {self.breakmetal}') #not req
+        print(f'-Brake Metal: {self.breakmetal}') #not req
         print(f'-Silicone: {self.silicone}' )
         print(f'-Liftprice: {self.liftprice}') #not req
 
@@ -87,47 +89,68 @@ class estimator:
         print('-'*50)
     
     def calculation(self):
-        total = int(self.shops) + int(self.fasteners) + int(self.linearfootageprice) + int(self.steelamount) + int(self.misc) + int(self.licensebond)\
-            + int(self.breakmetal) + int(self.silicone) + int(self.liftprice)
-        for v in self.others.values(): total += v
-        print(f'TOTAL AMOUNT FOR "OTHERS": {total}')
+        try:
+            total = int(self.shops) + int(self.fasteners) + int(self.linearfootageprice) + int(self.steelamount) + int(self.misc) + int(self.licensebond)\
+                + int(self.breakmetal) + int(self.silicone) + int(self.liftprice)
+            
+            for v in self.others.values(): total += v
+            print(f'TOTAL AMOUNT FOR "OTHERS": {total}')
+        except AttributeError:
+            print('Please enter the required fields')
 
 #main event loop
-def pc():
-    print()
-    print('COMMANDS (you must input all required fields (prefixed with "*"). You can use any command as many times as you want): ')
-    print(f'Anything in {color.BOLD}BOLD{color.END} is the command you issue. Anything that is {color.UNDERLINE}UNDERLINED{color.END} is the value you want associated with that item.')
-    print()
-    print(f'square footage area : {color.BOLD}-sqf {color.UNDERLINE}area{color.END}')
-    print(f'*linear footage area : {color.BOLD}-l {color.UNDERLINE}area{color.END}')
-    print(f'steel price : {color.BOLD}-st {color.UNDERLINE}price{color.END}')
-    print(f'breakmetal price : {color.BOLD}-b {color.UNDERLINE}price{color.END}')
-    print(f'lift price : {color.BOLD}-lp {color.UNDERLINE}price{color.END}')
-    print(f'other : {color.BOLD}-o{color.END}')
-    print(f'prints command list again : {color.BOLD}-p{color.END}')
-    print(f'Quit : {color.BOLD}-q{color.END}')
-    print('')
+    @staticmethod
+    def pc():
+        print()
+        print('COMMANDS (you must input all required fields (prefixed with "*"). You can use any command as many times as you want): ')
+        print(f'Anything in {color.BOLD}BOLD{color.END} is the command you issue. Anything that is {color.UNDERLINE}UNDERLINED{color.END} is the value you want associated with that item.')
+        print()
+        print(f'square footage area : {color.BOLD}-sqf {color.UNDERLINE}area{color.END}')
+        print(f'*linear footage area : {color.BOLD}-l {color.UNDERLINE}area{color.END}')
+        print(f'steel price : {color.BOLD}-st {color.UNDERLINE}price{color.END}')
+        print(f'breakmetal price : {color.BOLD}-b {color.UNDERLINE}price{color.END}')
+        print(f'lift price : {color.BOLD}-lp {color.UNDERLINE}price{color.END}')
+        print(f'other : {color.BOLD}-o{color.END}')
+        print(f'prints command list again : {color.BOLD}-c{color.END}')
+        print(f'prints list of all items and values : {color.BOLD}-a{color.END}')
+        print(f'prints total estimation : {color.BOLD}-t{color.END}')
+        print(f'Quit : {color.BOLD}-q{color.END}')
+        print('')
 
 class parser:
     #returns 
     @staticmethod
     def parse(est):
+        commands = {'-sqf':est.find_SQf, '-l': est.linFoot, '-st': est.steel, '-b': est.breakm,'-lp': est.liftp, \
+            '-o':est.otherd, '-c': estimator.pc, '-t': est.calculation, '-a': est.end}
         while True:
             user_inp = input()
-            if not ('-sqf ' in user_inp or '-l ' in user_inp or '-st ' in user_inp or '-b ' in user_inp \
-                or '-lp ' in user_inp or '-o ' in user_inp or '-p ' in user_inp or '-q' in user_inp):
+            if not ('-sqf' in user_inp or '-l' in user_inp or '-st' in user_inp or '-b' in user_inp \
+                or '-lp' in user_inp or '-o' in user_inp or '-c' in user_inp or '-q' in user_inp or '-a' in user_inp or '-t' in user_inp):
                 print('Invalid input')
             else:
                 if '-q' in user_inp:
                     print('System has shut down.')
                     break
+
+                if '-o' in user_inp: est.otherd()
+                if '-c' in user_inp: est.pc()
+                if '-t' in user_inp: est.calculation()
+                if '-a' in user_inp : est.end()
+
                 user_inp = user_inp.split()
-
-                #check, call the right function based on the command
-
-                #check if the index right after isnumeric() except q and p and o
-
-                #example bad input: -st -p
+                #
+                for idx, inp in enumerate(user_inp):
+                    #print('inp:' , inp)
+                    if inp in commands and inp not in ('-o', '-c','-t','-a'):
+                        if user_inp[idx+1].isnumeric():
+                            commands[inp](user_inp[idx+1])
+                
+                print('Successfully executed')
+                print()
+                #EDGE CASES
+                #-lp 2000 -b -a ; does not execute 
+                # -cr still works
 
 #-sq
 
@@ -136,7 +159,7 @@ def main():
     print()
     est = estimator()
     print('-'*50)
-    pc()
+    estimator.pc()
     parser.parse(est)
 
 main()
