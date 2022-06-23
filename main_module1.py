@@ -8,21 +8,34 @@ import math
 #calculates linear footage
 
 #sets global variable steelamount to param
+
+class color:
+   PURPLE = '\033[95m'
+   CYAN = '\033[96m'
+   DARKCYAN = '\033[36m'
+   BLUE = '\033[94m'
+   GREEN = '\033[92m'
+   YELLOW = '\033[93m'
+   RED = '\033[91m'
+   BOLD = '\033[1m'
+   UNDERLINE = '\033[4m'
+   END = '\033[0m'
+
 class estimator:
     def __init__(self):
-        while True:
-            print('Welcome to the glazing automated calculations system!!!')
-            print('-'*50)
-            squarefoot = input('Enter a total Square Footage: ')
-            if not squarefoot.isnumeric(): print('Please enter a number')
-            else:
-                self.find_SQf(squarefoot)
-                self.squarefoot_orginal = squarefoot
-                break 
+        self.others = dict()
+        print('Welcome to the glazing automated calculations system!!!')
+        print()
+        print('-'*50)
+        squarefoot = estimator.isnum(input('Enter a total Square Footage: '))
+        self.find_SQf(squarefoot)
+        self.squarefoot_orginal = squarefoot
+
     @staticmethod
-    def isnum(self,param): #predicate
-        if not param.isnumeric(): return False
-        else: return True
+    def isnum(param): #predicate
+        while True:
+            if not param.isnumeric(): param = input('Please enter a number: ')
+            else: return param
 
     def find_SQf(self,param):
         self.squarefoot = math.ceil(int(param) / 500) * 500
@@ -51,8 +64,9 @@ class estimator:
     #sets global variable breakmetal to param
     def breakm(self,param): self.breakmetal = int(param)
     #sets global variable others to param
-    def otherd(self,param,name): 
-        self.others = dict()
+    def otherd(self): 
+        name = input('What is the name of the "other": ')
+        param = estimator.isnum(input('what is the price of the "other": '))
         self.others[name] =  int(param)
     #sets global variable liftp to param
     def liftp(self,param): self.liftprice = int(param)
@@ -79,12 +93,53 @@ class estimator:
         print(f'TOTAL AMOUNT FOR "OTHERS": {total}')
 
 #main event loop
-def main():
-    print('COMMANDS (you must input all required fields. You can ): ')
+def pc():
     print()
+    print('COMMANDS (you must input all required fields (prefixed with "*"). You can use any command as many times as you want): ')
+    print(f'Anything in {color.BOLD}BOLD{color.END} is the command you issue. Anything that is {color.UNDERLINE}UNDERLINED{color.END} is the value you want associated with that item.')
+    print()
+    print(f'square footage area : {color.BOLD}-sqf {color.UNDERLINE}area{color.END}')
+    print(f'*linear footage area : {color.BOLD}-l {color.UNDERLINE}area{color.END}')
+    print(f'steel price : {color.BOLD}-st {color.UNDERLINE}price{color.END}')
+    print(f'breakmetal price : {color.BOLD}-b {color.UNDERLINE}price{color.END}')
+    print(f'lift price : {color.BOLD}-lp {color.UNDERLINE}price{color.END}')
+    print(f'other : {color.BOLD}-o{color.END}')
+    print(f'prints command list again : {color.BOLD}-p{color.END}')
+    print(f'Quit : {color.BOLD}-q{color.END}')
     print('')
+
+class parser:
+    #returns 
+    @staticmethod
+    def parse(est):
+        while True:
+            user_inp = input()
+            if not ('-sqf ' in user_inp or '-l ' in user_inp or '-st ' in user_inp or '-b ' in user_inp \
+                or '-lp ' in user_inp or '-o ' in user_inp or '-p ' in user_inp or '-q' in user_inp):
+                print('Invalid input')
+            else:
+                if '-q' in user_inp:
+                    print('System has shut down.')
+                    break
+                user_inp = user_inp.split()
+
+                #check, call the right function based on the command
+
+                #check if the index right after isnumeric() except q and p and o
+
+                #example bad input: -st -p
+
+#-sq
+
+#event loop
+def main():
     print()
-    print()
+    est = estimator()
+    print('-'*50)
+    pc()
+    parser.parse(est)
+
+main()
 
 
 
@@ -93,7 +148,7 @@ def main():
 
 
 
-
+'''
 def u():
     while True:
         while True:
@@ -205,6 +260,8 @@ def u():
             total = int(shops) + int(fasteners) + int(linearfootageprice) + int(steelamount) + int(misc) + int(licensebond)\
                     + int(breakmetal) + int(silicone) + int(others) + int(liftprice) + int(others2p)
             print(f'TOTAL AMOUNT FOR "OTHERS": {total}')
+'''
+
 
 
 
